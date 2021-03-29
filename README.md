@@ -34,7 +34,7 @@ When using a `.txt` file, the expected format is the following:
 3: c b a
 ```
 
-This represents the same format as the one in the CSV.
+This represents the same profile as the one in the CSV.
 
 ### Running a voting game
 
