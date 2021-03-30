@@ -8,7 +8,7 @@ class GameType(Enum):
 
 class Game:
 
-    def __init__(self, game_type, agenda, quota, profile):
+    def __init__(self, type, agenda, quota, profile):
 
         if not set(agenda).issubset(profile.alternatives):
             raise ValueError(
@@ -16,7 +16,7 @@ class Game:
             )
 
         # The game type, either AMENDMENT or SUCCESSIVE.
-        self.game_type = game_type
+        self.type = type
 
         # The initial agenda.
         self.agenda = agenda
@@ -30,7 +30,7 @@ class Game:
 
 
     def outcome(self):
-        if self.game_type == GameType.AMENDMENT:
+        if self.type == GameType.AMENDMENT:
             return self.outcome_amendment(self.agenda)
         else:
             return self.outcome_successive(self.agenda)
