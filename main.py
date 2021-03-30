@@ -6,7 +6,7 @@ def main():
 
     prof = Profile.from_txt("testprofile.txt")
 
-    game = Game(game_type=GameType.AMENDMENT
+    game = Game(game_type=GameType.SUCCESSIVE
                , agenda = ['a', 'b', 'c']
                , quota=1
                , profile=prof

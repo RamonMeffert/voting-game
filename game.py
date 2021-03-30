@@ -1,24 +1,26 @@
 from enum import Enum
 
+
 class GameType(Enum):
     AMENDMENT = 1,
     SUCCESSIVE = 2
+
 
 class Game:
 
     def __init__(self, game_type, agenda, quota, profile):
         # The game type, either AMENDMENT or SUCCESSIVE.
         self.game_type = game_type
-        
+
         # The initial agenda.
-        self.agenda    = agenda
-        
+        self.agenda = agenda
+
         # The quota, i.e. the number of votes that an alternative has to reach
         # in order for it to win.
-        self.quota     = quota
+        self.quota = quota
 
         # A profile of voter ballots
-        self.profile   = profile
+        self.profile = profile
 
     def outcome(self):
         if self.game_type == GameType.AMENDMENT:
@@ -31,12 +33,6 @@ class Game:
         procedure for a given agenda. Recursive calls receive a copy of the
         agenda with either the first or second alternative removed, whichever 
         did not reach the quota or was excluded due to tie-breaking.
-
-        Args:
-            agenda ([type]): [description]
-
-        Returns:
-            [type]: [description]
         """
 
         if len(agenda) >= 3:
@@ -53,8 +49,9 @@ class Game:
             outcome_2_3 = self.outcome_amendment(new_agenda_right)
 
             # condition: o^A(x1, x3, …, xm) P o^A(x2, x3, …, xm)
-            num_prefers_left = self.profile.num_prefers(outcome_1_3, outcome_2_3)
-            
+            num_prefers_left = self.profile.num_prefers(
+                outcome_1_3, outcome_2_3)
+
             # Pick an outcome with tie breaking: if the left branch doesn't win,
             # take the right branch.
             if num_prefers_left >= self.quota:
@@ -74,4 +71,34 @@ class Game:
                 return agenda[1]
 
     def outcome_successive(self, agenda):
+        """Recursive algorithm for calculating the outcome of the successive
+        procedure for a given agenda. Recursive calls receive a copy of the
+        agenda with the first alternative removed.
+        """
+
+        if len(agenda) >= 3:
+            left = agenda[0]
+            right = agenda[1:]
+
+            outcome_right = self.outcome_successive(right)
+
+            num_prefers_left = self.profile.num_prefers(left, outcome_right)
+
+            if num_prefers_left >= self.quota:
+                return left
+            else:
+                return outcome_right
+
+        elif len(agenda) == 2:
+            # o^S(x) = x
+            left = agenda[0]
+            right = agenda[1]
+
+            num_prefers_left = self.profile.num_prefers(left, right)
+
+            if num_prefers_left >= self.quota:
+                return left
+            else:
+                return right
+
         pass
