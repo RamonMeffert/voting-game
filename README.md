@@ -1,7 +1,7 @@
 # Voting Game
 
 Some exploratory code for a final project for the AI master course "Computational Social Choice" at the University of Groningen.
-The code currently implements the amendment procedure from [Barberà and Salvador (2017)][1].
+The code currently implements the amendment and successive procedures from [Barberà and Salvador (2017)][1].
 
 ## Usage
 
