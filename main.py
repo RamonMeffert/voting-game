@@ -10,7 +10,7 @@ def main():
                , agenda = ['a', 'b', 'c']
                , quota = 1
                , profile = prof
-    )
+               )
 
     print("outcome:", game.outcome())
 

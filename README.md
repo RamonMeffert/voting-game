@@ -41,7 +41,7 @@ This represents the same profile as the one in the CSV.
 To run a sequential voting game, first create a game:
 
 ```python
-game = Game( game_type = GameType.AMENDMENT
+game = Game( type = GameType.AMENDMENT
            , agenda = ['a', 'b', 'c'] 
            , quota = 1
            , profile = Profile.from_txt("profile.txt")
