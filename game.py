@@ -37,27 +37,27 @@ class Game:
 
         if len(agenda) >= 3:
             # If there are at least 3 items, we can modify the agenda and do a
-            # recursive call
+            # recursive call which still has 2 items so we can compare them
 
-            # agenda minus option 2, i.e. [x1, x3, ..., xm]
-            new_agenda_left = [agenda[0]] + agenda[2:]
-            # agenda minus option 1, i.e. [x2, x3, ..., xm]
-            new_agenda_right = agenda[1:]
+            # agenda minus option 2, e.g. [x1, x3, ..., xm]
+            left = [agenda[0]] + agenda[2:]
+            # agenda minus option 1, e.g. [x2, x3, ..., xm]
+            right = agenda[1:]
 
-            # calculate outcomes for both agendas
-            outcome_1_3 = self.outcome_amendment(new_agenda_left)
-            outcome_2_3 = self.outcome_amendment(new_agenda_right)
+            # recursively calculate outcomes for both branches
+            outcome_left = self.outcome_amendment(left)
+            outcome_right = self.outcome_amendment(right)
 
             # condition: o^A(x1, x3, …, xm) P o^A(x2, x3, …, xm)
             num_prefers_left = self.profile.num_prefers(
-                outcome_1_3, outcome_2_3)
+                outcome_left, outcome_right)
 
             # Pick an outcome with tie breaking: if the left branch doesn't win,
             # take the right branch.
             if num_prefers_left >= self.quota:
-                return outcome_1_3
+                return outcome_left
             else:
-                return outcome_2_3
+                return outcome_right
 
         elif len(agenda) == 2:
             # If there are only two items left, pick the one that reaches the
@@ -77,11 +77,18 @@ class Game:
         """
 
         if len(agenda) >= 3:
+            # If there are at least 3 items, we can modify the agenda and do a
+            # recursive call which still has 2 items so we can compare them
+
+            # left is first option in the agenda, e.g. x1
             left = agenda[0]
+            # right is rest of the agenda, e.g. [x2, x3, …, xm]
             right = agenda[1:]
 
+            # recursively calculate the outcome of the right branch
             outcome_right = self.outcome_successive(right)
 
+            # condition: x1 P o^S(x2, x3, …, xm)
             num_prefers_left = self.profile.num_prefers(left, outcome_right)
 
             if num_prefers_left >= self.quota:
@@ -90,7 +97,7 @@ class Game:
                 return outcome_right
 
         elif len(agenda) == 2:
-            # o^S(x) = x
+            # o^S(x) = x, so when m = 2, x1 P o^S(x2) == x1 P x2
             left = agenda[0]
             right = agenda[1]
 
@@ -100,5 +107,3 @@ class Game:
                 return left
             else:
                 return right
-
-        pass
