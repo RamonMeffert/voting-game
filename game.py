@@ -9,6 +9,12 @@ class GameType(Enum):
 class Game:
 
     def __init__(self, game_type, agenda, quota, profile):
+
+        if not set(agenda).issubset(profile.alternatives):
+            raise ValueError(
+                "The agenda contains alternatives that are not in the profile."
+            )
+
         # The game type, either AMENDMENT or SUCCESSIVE.
         self.game_type = game_type
 
@@ -22,11 +28,13 @@ class Game:
         # A profile of voter ballots
         self.profile = profile
 
+
     def outcome(self):
         if self.game_type == GameType.AMENDMENT:
             return self.outcome_amendment(self.agenda)
         else:
             return self.outcome_successive(self.agenda)
+
 
     def outcome_amendment(self, agenda):
         """Recursive algorithm for calculating the outcome of the amendment
