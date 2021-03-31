@@ -18,6 +18,7 @@ class Profile:
         # Save the available alternatives as a set
         self.alternatives = set()
 
+
     @staticmethod
     def from_csv(path: str) -> 'Profile':
         """Converts a csv file containing a profile to a Profile object.
@@ -53,6 +54,7 @@ class Profile:
 
         return new_profile
 
+
     @staticmethod
     def from_txt(path: str) -> 'Profile':
         """Converts a file containing a profile to a Profile object.
@@ -85,6 +87,7 @@ class Profile:
 
         return new_profile
 
+
     def __validate(self):
         """Validates the profile by:
 
@@ -106,8 +109,7 @@ class Profile:
             # available, or if it contains alternatives not in the set of
             # alternatives, throw an error
             length_different = len(preferences) != len(self.alternatives)
-            alternatives_differ = set(
-                preferences).difference(self.alternatives)
+            alternatives_differ = set(preferences).difference(self.alternatives)
 
             # Provide helpful error message
             if len(alternatives_differ) != 0:
@@ -129,6 +131,11 @@ class Profile:
                                  f"{len(self.alternatives)} alternatives but got "
                                  f"{len(preferences)} instead.")
 
+
+    def __sorted_alternatives(self):
+        return sorted(list(self.alternatives))
+
+
     def ballot(self, id):
         """Returns the ballot of a voter with id `id`.
 
@@ -136,6 +143,7 @@ class Profile:
             [type]: [description]
         """
         return self.ballots[id]
+
 
     def prefers(self, id, a1, a2) -> bool:
         """Whether a voter with id `id` prefers alternative `a1` over `a2`.
@@ -145,6 +153,7 @@ class Profile:
 
         # lower index means higher ranking
         return pref.index(a1) < pref.index(a2)
+
 
     def num_prefers(self, a1, a2):
         """The number of agents that prefer alternative `a1` over `a2`.
@@ -157,3 +166,57 @@ class Profile:
                 num += 1
 
         return num
+
+
+    def dominance(self):
+        """Calculate the dominance matrix of a profile
+
+        Returns:
+            An 𝑚×𝑚 matrix representing the dominance relation P
+        """
+        sorted_alternatives = sorted(list(self.alternatives))
+
+        dominance = [[self.num_prefers(y, x) for x in sorted_alternatives] for y in sorted_alternatives]
+
+        return dominance
+
+
+    def print_dominance(self):
+        """Pretty-print a dominance matrix
+        """
+
+        dominance = self.dominance()
+
+        # Print header
+        print("Dominance matrix:\n")
+        print("\t  │ ", end='')
+        for x in self.__sorted_alternatives():
+            print(x + " ", end='')
+        print() # newline
+
+        # Print separating line
+        print("\t──┼", end='')
+        for _ in range(len(self.alternatives)):
+            print("──", end='')
+        print()
+
+        # Print rows
+        for i, x in enumerate(self.__sorted_alternatives()):
+            print(f"\t{x} │ ", end = '')
+            for j, _ in enumerate(self.__sorted_alternatives()):
+                print(str(dominance[i][j]) + " ", end='')
+            print() # newline
+        print() # newline
+
+    
+    def print(self):
+        """Pretty-print a profile
+        """
+
+        print("Profile:\n")
+        for voter, ballot in self.ballots.items():
+            print(f"\t{voter} │ ", end='')
+            for alternative in ballot:
+                print(alternative, end=' ')
+            print() # newline
+        print() # newline

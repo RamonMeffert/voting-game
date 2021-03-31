@@ -1,10 +1,4 @@
-from enum import Enum
-
-
-class GameType(Enum):
-    AMENDMENT = 1,
-    SUCCESSIVE = 2
-
+from gametype import GameType
 
 class Game:
 
@@ -77,6 +71,7 @@ class Game:
                 return agenda[0]
             else:
                 return agenda[1]
+
 
     def outcome_successive(self, agenda):
         """Recursive algorithm for calculating the outcome of the successive
