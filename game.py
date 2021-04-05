@@ -25,12 +25,17 @@ class Game:
 
     def outcome(self):
         if self.type == GameType.AMENDMENT:
-            return self.outcome_amendment(self.agenda)
+            outcome = self.__outcome_amendment(self.agenda)
         else:
-            return self.outcome_successive(self.agenda)
+            outcome = self.__outcome_successive(self.agenda)
+        
+        if self.profile.alternatives_names != None:
+            return f"{outcome}, {self.profile.alternatives_names[outcome]}"
+        else:
+            return outcome
 
 
-    def outcome_amendment(self, agenda):
+    def __outcome_amendment(self, agenda):
         """Recursive algorithm for calculating the outcome of the amendment
         procedure for a given agenda. Recursive calls receive a copy of the
         agenda with either the first or second alternative removed, whichever 
@@ -47,8 +52,8 @@ class Game:
             right = agenda[1:]
 
             # recursively calculate outcomes for both branches
-            outcome_left = self.outcome_amendment(left)
-            outcome_right = self.outcome_amendment(right)
+            outcome_left = self.__outcome_amendment(left)
+            outcome_right = self.__outcome_amendment(right)
 
             # condition: o^A(x1, x3, …, xm) P o^A(x2, x3, …, xm)
             num_prefers_left = self.profile.num_prefers(
@@ -73,7 +78,7 @@ class Game:
                 return agenda[1]
 
 
-    def outcome_successive(self, agenda):
+    def __outcome_successive(self, agenda):
         """Recursive algorithm for calculating the outcome of the successive
         procedure for a given agenda. Recursive calls receive a copy of the
         agenda with the first alternative removed.
@@ -89,7 +94,7 @@ class Game:
             right = agenda[1:]
 
             # recursively calculate the outcome of the right branch
-            outcome_right = self.outcome_successive(right)
+            outcome_right = self.__outcome_successive(right)
 
             # condition: x1 P o^S(x2, x3, …, xm)
             num_prefers_left = self.profile.num_prefers(left, outcome_right)

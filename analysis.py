@@ -22,6 +22,9 @@ class Analysis:
 
         for permutation in permutations(self.profile.alternatives):
             game = Game(self.type, list(permutation), self.quota, self.profile)
-            outcomes.add(game.outcome())
+            outcome = game.outcome()
+            # uncomment the line below for debugging
+            # print(f"agenda = {list(permutation)}, outcome = {outcome}")
+            outcomes.add(outcome)
 
         return sorted(list(outcomes))
