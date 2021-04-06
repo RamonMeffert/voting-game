@@ -325,8 +325,6 @@ class Profile:
             if len(name) > maxlen:
                 maxlen = len(name)
 
-        print("maxlen: ", maxlen)
-
         # Print header
         print("Dominance matrix:\n")
         print("\t", end='')
