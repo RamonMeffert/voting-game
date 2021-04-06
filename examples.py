@@ -35,7 +35,7 @@ def main():
 
     analysis = Analysis(GameType.AMENDMENT, uselec, 2, uselec_plur)
 
-    print(analysis.quota_outcomes())
+    print(analysis.outcomes())
 
     # csv_game_amendment = Game(GameType.AMENDMENT, ['c', 'b', 'a'], 2, csv_example)
     # csv_game_successive = Game(GameType.SUCCESSIVE, ['c', 'b', 'a'], 2, csv_example)

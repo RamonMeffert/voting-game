@@ -11,7 +11,7 @@ class Analysis:
         self.quota = quota
         self.expected_outcome = expected_outcome
 
-    def quota_outcomes(self):
+    def outcomes(self):
         """The possible outcomes for the current configuration.
 
         Currently just loops over all permutations of the agenda, calculates the
