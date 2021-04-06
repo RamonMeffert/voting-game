@@ -37,9 +37,11 @@ def main():
 
     print("\n### Working with PrefLib .soc files ###\n")
 
-    soc1 = Profile.from_soc("examples/ED-00006-00000021.soc")
+    soc1 = Profile.from_soc("examples/ED-00004-00000008.soc")
 
     soc1.print()
+
+    soc1.print_dominance()
 
     soc1_agenda = random.sample(list(soc1.alternatives), len(soc1.alternatives))
 

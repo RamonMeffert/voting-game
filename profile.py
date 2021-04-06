@@ -244,9 +244,9 @@ class Profile:
         """
         num = 0
 
-        for voter in self.ballots.keys():
-            if self.prefers(voter, a1, a2):
-                num += 1
+        for ballot in self.ballots.values():
+            if self.prefers(ballot.id, a1, a2):
+                num += ballot.weight
 
         return num
 
@@ -263,8 +263,7 @@ class Profile:
 
         return dominance
 
-
-    #TODO: Fix this to include weight
+    #TODO: Improve printing
     def print_dominance(self):
         """Pretty-print a dominance matrix
         """
