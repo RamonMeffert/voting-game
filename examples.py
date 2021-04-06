@@ -14,46 +14,59 @@ def main():
 
     csv_example.print()
 
-    csv_winner = csv_example.winner(Rule.PLURALITY)
+    csv_winner_plur = csv_example.winner(Rule.PLURALITY)
+    csv_winner_bord = csv_example.winner(Rule.BORDA)
 
-    print("The winner is", csv_winner)
+    print("Plurality:", csv_winner_plur, "Borda:", csv_winner_bord)
 
-    csv_game_amendment = Game(GameType.AMENDMENT, ['c', 'b', 'a'], 2, csv_example)
-    csv_game_successive = Game(GameType.SUCCESSIVE, ['c', 'b', 'a'], 2, csv_example)
+    print("### Example 2.2 from the lecture notes ###")
 
-    print(f"Outcome with amendment: {csv_game_amendment.outcome()}; with successive: {csv_game_successive.outcome()}")
+    uselec = Profile.from_soc("examples/USElec.soc")
 
-    print("\n### Loading data from .txt and printing information ###\n")
+    uselec.print()
 
-    ex_5_2 = Profile.from_txt("examples/ex_5_2.txt")
+    uselec_plur = uselec.winner(Rule.PLURALITY)
+    uselec_bord = uselec.winner(Rule.BORDA)
 
-    print("Example 5.2, Barberà and Gerber:\n")
+    print("Plurality:", uselec_plur) 
+    print("Borda:", uselec_bord)
 
-    ex_5_2.print()
+    # csv_game_amendment = Game(GameType.AMENDMENT, ['c', 'b', 'a'], 2, csv_example)
+    # csv_game_successive = Game(GameType.SUCCESSIVE, ['c', 'b', 'a'], 2, csv_example)
 
-    ex_5_2.print_dominance()
+    # print(f"Outcome with amendment: {csv_game_amendment.outcome()}; with successive: {csv_game_successive.outcome()}")
 
-    print("\n### Running multiple games with different quota ###\n")
+    # print("\n### Loading data from .txt and printing information ###\n")
 
-    for q in [i + 1 for i in range(5)]:
-        analysis = Analysis(GameType.AMENDMENT, ex_5_2, q)
-        outcomes = analysis.quota_outcomes()
-        print(f"q = {q}: {outcomes}")
+    # ex_5_2 = Profile.from_txt("examples/ex_5_2.txt")
 
-    print("\n### Working with PrefLib .soc files ###\n")
+    # print("Example 5.2, Barberà and Gerber:\n")
 
-    soc1 = Profile.from_soc("examples/ED-00004-00000008.soc")
+    # ex_5_2.print()
 
-    soc1.print()
+    # ex_5_2.print_dominance()
 
-    soc1.print_dominance()
+    # print("\n### Running multiple games with different quota ###\n")
 
-    soc1_agenda = random.sample(list(soc1.alternatives), len(soc1.alternatives))
+    # for q in [i + 1 for i in range(5)]:
+    #     analysis = Analysis(GameType.AMENDMENT, ex_5_2, q)
+    #     outcomes = analysis.quota_outcomes()
+    #     print(f"q = {q}: {outcomes}")
 
-    soc1_game = Game(GameType.AMENDMENT, soc1_agenda, 2, soc1)
+    # print("\n### Working with PrefLib .soc files ###\n")
 
-    print("Outcome of a .soc amendment game:", soc1_game.outcome())
-    print("Agenda was", soc1_agenda)
+    # soc1 = Profile.from_soc("examples/ED-00004-00000008.soc")
+
+    # soc1.print()
+
+    # soc1.print_dominance()
+
+    # soc1_agenda = random.sample(list(soc1.alternatives), len(soc1.alternatives))
+
+    # soc1_game = Game(GameType.AMENDMENT, soc1_agenda, 2, soc1)
+
+    # print("Outcome of a .soc amendment game:", soc1_game.outcome())
+    # print("Agenda was", soc1_agenda)
 
     # Add a simple majority (non-successive) outcome
     # Analyze all agendas and see how often the desired output

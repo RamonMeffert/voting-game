@@ -273,6 +273,43 @@ class Profile:
 
         return dominance
 
+    def print(self):
+        """Pretty-print a profile
+        """
+
+        maxlen = len(str(len(self.ballots)))
+        for ballot in self.ballots.values():
+            length = len(str(ballot.weight))
+            if length > maxlen:
+                maxlen = length
+
+        has_weights = max([ballot.weight for ballot in self.ballots.values()]) > 1
+
+        print("Profile:\n")
+        for voter, ballot in self.ballots.items():
+            if has_weights:
+                print(f"\t#{ballot.weight:{maxlen}} │ ", end='')
+                for alternative in ballot.preference:
+                    print(alternative, end=' ')
+                print() # newline
+            else:
+                print(f"\t{voter:{maxlen}} │ ", end='')
+                for alternative in ballot.preference:
+                    print(alternative, end=' ')
+                print() # newline
+        print() # newline
+
+        if self.alternatives_names != None:
+            print("IDs represent the following alternatives:\n")
+
+            brk = 0
+            for id, name in self.alternatives_names.items():
+                brk += 1
+                print(f"{id:>2}: {name:30}", end=' ')
+                if brk % 3 == 0:
+                    print()
+            print()
+
     #TODO: Improve printing
     def print_dominance(self):
         """Pretty-print a dominance matrix
@@ -341,44 +378,20 @@ class Profile:
 
 
     def __winner_borda(self):
-        raise NotImplementedError()
+        m = len(self.alternatives)
+        borda_score = dict.fromkeys(self.alternatives, 0)
+
+        for ballot in self.ballots.values():
+            for index, alternative in enumerate(ballot.preference):
+                # calculate weight
+                w = m - index - 1
+                # update borda score
+                borda_score[alternative] += w
+
+        outcome = max(borda_score, key = lambda key : borda_score[key])
+
+        return self.alternative_name(outcome)
     
 
     def __winner_condorcet(self):
         raise NotImplementedError()
-
-    
-    def print(self):
-        """Pretty-print a profile
-        """
-
-        maxlen = len(str(len(self.ballots)))
-        for ballot in self.ballots.values():
-            length = len(str(ballot.weight))
-            if length > maxlen:
-                maxlen = length
-
-        print("Profile:\n")
-        for voter, ballot in self.ballots.items():
-            if ballot.weight == 1:
-                print(f"\t{voter:{maxlen}} │ ", end='')
-                for alternative in ballot.preference:
-                    print(alternative, end=' ')
-                print() # newline
-            else:
-                print(f"\t#{ballot.weight:{maxlen}} │ ", end='')
-                for alternative in ballot.preference:
-                    print(alternative, end=' ')
-                print() # newline
-        print() # newline
-
-        if self.alternatives_names != None:
-            print("IDs represent the following alternatives:\n")
-
-            brk = 0
-            for id, name in self.alternatives_names.items():
-                brk += 1
-                print(f"{id:>2}: {name:30}", end=' ')
-                if brk % 3 == 0:
-                    print()
-            print()
