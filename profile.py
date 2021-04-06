@@ -312,7 +312,6 @@ class Profile:
             print()
 
 
-    #TODO: Improve printing
     def print_dominance(self):
         """Pretty-print a dominance matrix
         """

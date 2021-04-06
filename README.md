@@ -11,7 +11,7 @@ You can supply a voting profile as a `.csv`, `.txt` or [PrefLib](https://www.pre
 For the `.csv`, the program expects column headers indicating the voter ids.
 Columns indicate the linear order of preferences, e.g. the file
 
-```
+```csv
 1, 2, 3
 a, b, c
 c, a, b
@@ -20,7 +20,7 @@ b, c, a
 
 represents the profile
 
-```
+```text
 1 │ a c b
 2 │ b a c
 3 │ c b a
@@ -28,7 +28,7 @@ represents the profile
 
 When using a `.txt` file, the expected format is the following:
 
-```
+```text
 1: a c b
 2: b a c
 3: c b a
