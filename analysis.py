@@ -36,6 +36,6 @@ class Analysis:
             total = sum(outcomes.values())
             num_expected_outcome = outcomes[self.expected_outcome]
             percentage = num_expected_outcome / total * 100
-            print(f"The expected outcome occured {round(percentage, 1)}% ({num_expected_outcome}/{total}) of the time.")
+            print(f"The expected outcome, {self.profile.alternative_name(self.expected_outcome)}, occured {round(percentage, 1)}% ({num_expected_outcome}/{total}) of the time.")
 
         return outcome

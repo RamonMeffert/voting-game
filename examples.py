@@ -30,8 +30,8 @@ def main():
     uselec_plur = uselec.winner(Rule.PLURALITY)
     uselec_bord = uselec.winner(Rule.BORDA)
 
-    print("Plurality:", uselec_plur) 
-    print("Borda:", uselec_bord)
+    print("Plurality:", uselec.alternative_name(uselec_plur)) 
+    print("Borda:", uselec.alternative_name(uselec_bord))
 
     analysis = Analysis(GameType.AMENDMENT, uselec, 2, uselec_plur)
 
