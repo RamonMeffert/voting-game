@@ -176,7 +176,7 @@ class Profile:
         """
 
         if self.alternatives_names != None:
-            return f"{name}, {self.alternatives_names[name]}"
+            return self.alternatives_names[name]
         else:
             return name
 
@@ -273,6 +273,7 @@ class Profile:
 
         return dominance
 
+
     def print(self):
         """Pretty-print a profile
         """
@@ -310,6 +311,7 @@ class Profile:
                     print()
             print()
 
+
     #TODO: Improve printing
     def print_dominance(self):
         """Pretty-print a dominance matrix
@@ -317,24 +319,40 @@ class Profile:
 
         dominance = self.dominance()
 
+        maxlen = len(str(max(max(dominance))))
+        for x in self.__sorted_alternatives():
+            name = self.alternative_name(x)
+            if len(name) > maxlen:
+                maxlen = len(name)
+
+        print("maxlen: ", maxlen)
+
         # Print header
         print("Dominance matrix:\n")
-        print("\t  │ ", end='')
+        print("\t", end='')
+        for _ in range(maxlen):
+            print(" ", end='')
+        print(" │ ", end='')
         for x in self.__sorted_alternatives():
-            print(x + " ", end='')
+            name = self.alternative_name(x)
+            print(f"{name:^{maxlen + 1}}", end='')
         print() # newline
 
         # Print separating line
-        print("\t──┼", end='')
-        for _ in range(len(self.alternatives)):
-            print("──", end='')
+        print("\t", end='')
+        for _ in range(maxlen + 1):
+            print("─", end='')
+        print("┼", end='')
+        for _ in range(len(self.alternatives) * (maxlen + 1)):
+            print("─", end='')
         print()
 
         # Print rows
         for i, x in enumerate(self.__sorted_alternatives()):
-            print(f"\t{x} │ ", end = '')
+            name = self.alternative_name(x)
+            print(f"\t{name:{maxlen}} │ ", end = '')
             for j, _ in enumerate(self.__sorted_alternatives()):
-                print(str(dominance[i][j]) + " ", end='')
+                print(f"{str(dominance[i][j]):^{maxlen + 1}}", end='')
             print() # newline
         print() # newline
 
@@ -346,6 +364,8 @@ class Profile:
             return self.__winner_borda()
         elif rule == Rule.CONDORCET:
             return self.__winner_condorcet()
+        elif rule == Rule.WEAK_CONDORCET:
+            return self.__winner_weak_condorcet()
 
 
     def __winner_plurality(self):
@@ -374,7 +394,7 @@ class Profile:
                 # Score is unchanged, so doesn't need to be updated
                 winner_id = [str(winner_id), str(alternative)].sort()[0]
 
-        return self.alternative_name(winner_id)
+        return winner_id
 
 
     def __winner_borda(self):
@@ -388,10 +408,14 @@ class Profile:
                 # update borda score
                 borda_score[alternative] += w
 
-        outcome = max(borda_score, key = lambda key : borda_score[key])
+        outcome = max(borda_score, key = borda_score.get)
 
-        return self.alternative_name(outcome)
+        return outcome
     
 
     def __winner_condorcet(self):
+        raise NotImplementedError()
+
+
+    def __winner_weak_condorcet(self):
         raise NotImplementedError()

@@ -25,26 +25,32 @@ def main():
 
     uselec.print()
 
+    uselec.print_dominance()
+
     uselec_plur = uselec.winner(Rule.PLURALITY)
     uselec_bord = uselec.winner(Rule.BORDA)
 
     print("Plurality:", uselec_plur) 
     print("Borda:", uselec_bord)
 
+    analysis = Analysis(GameType.AMENDMENT, uselec, 2, uselec_plur)
+
+    print(analysis.quota_outcomes())
+
     # csv_game_amendment = Game(GameType.AMENDMENT, ['c', 'b', 'a'], 2, csv_example)
     # csv_game_successive = Game(GameType.SUCCESSIVE, ['c', 'b', 'a'], 2, csv_example)
 
     # print(f"Outcome with amendment: {csv_game_amendment.outcome()}; with successive: {csv_game_successive.outcome()}")
 
-    # print("\n### Loading data from .txt and printing information ###\n")
+    print("\n### Loading data from .txt and printing information ###\n")
 
-    # ex_5_2 = Profile.from_txt("examples/ex_5_2.txt")
+    ex_5_2 = Profile.from_txt("examples/ex_5_2.txt")
 
-    # print("Example 5.2, Barberà and Gerber:\n")
+    print("Example 5.2, Barberà and Gerber:\n")
 
-    # ex_5_2.print()
+    ex_5_2.print()
 
-    # ex_5_2.print_dominance()
+    ex_5_2.print_dominance()
 
     # print("\n### Running multiple games with different quota ###\n")
 

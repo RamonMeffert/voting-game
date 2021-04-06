@@ -29,7 +29,7 @@ class Game:
         else:
             outcome = self.__outcome_successive(self.agenda)
         
-        return self.profile.alternative_name(outcome)
+        return outcome
 
 
     def __outcome_amendment(self, agenda):
