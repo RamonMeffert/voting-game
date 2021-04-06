@@ -1,6 +1,7 @@
 import csv
 import profile
 import random
+from rule import Rule
 from ballot import Ballot
 from typing import Set
 from os import stat
@@ -52,7 +53,6 @@ class Profile:
                 ballots[voter_id] = Ballot(id=voter_id,preference=[])
 
             for line in reader:
-                print(line)
                 for voter in reader.fieldnames:
                     ballots[int(voter)].preference.append(line[voter])
 
@@ -169,6 +169,16 @@ class Profile:
         random_profile.__validate()
 
         return random_profile
+
+
+    def alternative_name(self, name) -> str:
+        """Helper method for printing the name of an alternative.
+        """
+
+        if self.alternatives_names != None:
+            return f"{name}, {self.alternatives_names[name]}"
+        else:
+            return name
 
 
     def __validate(self):
@@ -290,6 +300,52 @@ class Profile:
                 print(str(dominance[i][j]) + " ", end='')
             print() # newline
         print() # newline
+
+
+    def winner(self, rule: Rule):
+        if rule == Rule.PLURALITY:
+            return self.__winner_plurality()
+        elif rule == Rule.BORDA:
+            return self.__winner_borda()
+        elif rule == Rule.CONDORCET:
+            return self.__winner_condorcet()
+
+
+    def __winner_plurality(self):
+        """Plurality with alphabetic tie-breaking
+        """
+
+        # initialize dictionary of plurality scores for all alternatives with an
+        # initial value of 0
+        plur_score = dict.fromkeys(self.alternatives, 0)
+
+        # Calculate plurality scores by traversing all ballots
+        for ballot in self.ballots.values():
+            # the top choice for the current ballot
+            voter_max = ballot.preference[0]
+
+            plur_score[voter_max] += ballot.weight
+
+        (winner_id, winner_score) = plur_score.popitem()
+
+        for alternative, score in plur_score.items():
+            if score > winner_score:
+                winner_id = alternative
+                winner_score = score
+            elif score == winner_score:
+                # Tie breaking. Sort alphabetically and take first item.
+                # Score is unchanged, so doesn't need to be updated
+                winner_id = [str(winner_id), str(alternative)].sort()[0]
+
+        return self.alternative_name(winner_id)
+
+
+    def __winner_borda(self):
+        raise NotImplementedError()
+    
+
+    def __winner_condorcet(self):
+        raise NotImplementedError()
 
     
     def print(self):

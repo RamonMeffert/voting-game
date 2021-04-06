@@ -4,6 +4,7 @@ from profile import Profile
 from game import Game
 from gametype import GameType
 from analysis import Analysis
+from rule import Rule
 
 def main():
 
@@ -12,6 +13,10 @@ def main():
     csv_example = Profile.from_csv("examples/testprofile.csv")
 
     csv_example.print()
+
+    csv_winner = csv_example.winner(Rule.PLURALITY)
+
+    print("The winner is", csv_winner)
 
     csv_game_amendment = Game(GameType.AMENDMENT, ['c', 'b', 'a'], 2, csv_example)
     csv_game_successive = Game(GameType.SUCCESSIVE, ['c', 'b', 'a'], 2, csv_example)
@@ -49,6 +54,12 @@ def main():
 
     print("Outcome of a .soc amendment game:", soc1_game.outcome())
     print("Agenda was", soc1_agenda)
+
+    # Add a simple majority (non-successive) outcome
+    # Analyze all agendas and see how often the desired output
+    # is generated
+
+    # Maybe: add condorcet winner check (should be non-manipulable)
 
 
 if __name__ == "__main__":
