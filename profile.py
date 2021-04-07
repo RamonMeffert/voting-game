@@ -389,7 +389,7 @@ class Profile:
             elif score == winner_score:
                 # Tie breaking. Sort alphabetically and take first item.
                 # Score is unchanged, so doesn't need to be updated
-                winner_id = [str(winner_id), str(alternative)].sort()[0]
+                winner_id = sorted([str(winner_id), str(alternative)])[0]
 
         return winner_id
 
