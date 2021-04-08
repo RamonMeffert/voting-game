@@ -50,15 +50,17 @@ def main(args):
 
     os.makedirs(args.output_directory, exist_ok=True)
 
-    output_filename = os.path.join(args.output_directory, f"{str(args.rule)}-{str(args.procedure)}-{args.n_alternatives}.log")
+    output_filename = os.path.join(
+        args.output_directory,
+        f"{str(args.rule)}-{str(args.procedure)}-{args.n_alternatives}.log",
+    )
 
     with open(output_filename, "w") as output_file:
         writer = csv.writer(output_file)
-        writer.writerow(['average', avg])
+        writer.writerow(["average", avg])
         writer.writerow([])
         for filename, percentage in results.items():
             writer.writerow([filename, percentage])
-
 
 
 def read_profiles(dir, alternatives):
@@ -108,14 +110,14 @@ if __name__ == "__main__":
         "-i",
         "--input_directory",
         type=str,
-        help="An input directory containing .soc files"
+        help="An input directory containing .soc files",
     )
     parser.add_argument(
         "-o",
         "--output_directory",
         type=str,
         default="./logs/",
-        help="The directory to save output files to. Will be created if it doesn't exist already"
+        help="The directory to save output files to. Will be created if it doesn't exist already",
     )
 
     args = parser.parse_args()

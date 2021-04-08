@@ -155,16 +155,28 @@ class Profile:
 
 
     @classmethod
-    def random(cls, num_voters: int, num_alternatives: int) -> 'Profile':
-        """Generate a random profile with the given number of voters and alternatives
+    def random(cls, num_voters: int, num_alternatives: int, num_groups: int = None) -> 'Profile':
+        """Generate a random profile with the given number of voters and alternatives.
+        If the num_groups parameter is given, that number of different preferences will be generated
+        and assigned to equal groups.
         """
 
-        alternatives = [ chr(c) for c in range(ord('a'), ord('a') + num_alternatives) ]
+        ## TODO: Add voter groups groups
+
+        if num_groups == None:
+            num_groups = num_voters
+
+        alternatives = set([ chr(c) for c in range(ord('a'), ord('a') + num_alternatives) ])
         ballots = {}
+        group_ballots = {}
+
+        for group in [g + 1 for g in range(num_groups)]:
+            group_ballots[group] = random.sample(alternatives, num_alternatives)
 
         for voter in [v + 1 for v in range(num_voters)]:
-            ballots[voter] = random.sample(alternatives, num_alternatives)
-        
+            preference = group_ballots[(voter - 1) % num_groups + 1]
+            ballots[voter] = Ballot(id=voter, preference=preference)
+
         random_profile = cls(ballots, alternatives)
         random_profile.__validate()
 

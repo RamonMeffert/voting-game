@@ -29,7 +29,7 @@ class Analysis:
 
         outcomes_temp = []
 
-        with concurrent.futures.ProcessPoolExecutor() as executor:
+        with concurrent.futures.ProcessPoolExecutor(max_workers=4) as executor:
             for permutation in permutations:
                 outcomes_temp.append(
                     executor.submit(calculate_outcome, self.type, permutation, self.quota, self.profile)

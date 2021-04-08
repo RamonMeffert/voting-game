@@ -81,12 +81,16 @@ outcomes = analysis.outcomes()
 
 If an expected outcome was specified, this will also print how often that outcome occurred. This can be seen as an indication of the manipulability of a game type in some situations: if the expected winner is often different from the winner of the game, then the agenda has a large influence on the outcome. Similarly, if there are many different outcomes for some game, this also indicates the game type could be manipulable.
 
-🚨 WARNING 🚨 When analysing profiles with many alternatives, the number of possible agendas grows _really_ fast: the number of possible agendas, i.e. all permutations of the alternatives, is the factorial of the number of alternatives.
-This program uses some multiprocessing tricks to try to speed up the calculation<sup>1</sup>, but running the analysis on more than ~10 alternatives (depending on your hardware) is not advised. On my pc, analysing a profile with 9 alternatives takes around 3 minutes (before multiprocessing: 13 minutes).
+**🚨 WARNING 🚨** When analysing profiles with many alternatives, the number of possible agendas grows _really_ fast:
+The number of possible agendas, i.e. all permutations of the alternatives, is the factorial of the number of alternatives.
+This program uses some multiprocessing tricks to try to speed up the calculation<sup>1</sup>, but running the analysis on more than ~10 alternatives (depending on your hardware) is not advised.
+On my pc, analysing a profile with 9 alternatives with the successive procedure takes around 3 minutes (before multiprocessing: 13 minutes).
+**Note**: This seems to run into deadlocks sometimes.
+If the code runs for longer than you expect (and you probably shouldn't expect anything over 10 minutes if you're using a ‘reasonable’ number of alternatives), just kill the program.
 
 ### Running experiments
 
-(Still need to write documentation for this. See `experiment.py` for some details)
+(Still need to write documentation for this. See `main.py` for some details)
 
 ---
 
