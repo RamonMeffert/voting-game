@@ -1,6 +1,7 @@
 import itertools
 import math
 import concurrent.futures
+import random
 from gametype import GameType
 from profile import Profile
 from game import Game
@@ -23,13 +24,28 @@ class Analysis:
         """
 
         outcomes = dict.fromkeys(self.profile.alternatives, 0)
+        m = len(self.profile.alternatives)
+        n = len(self.profile.ballots)
+        permutations = []
 
-        permutations = itertools.permutations(self.profile.alternatives)
-        total = math.factorial(len(self.profile.alternatives))
+        if m > 7:
+            # minimum between n^2 and 7!
+            # based on doi:10/gdtm7r, section 6.3
+            total = min(n**2, 5040)
+            for _ in range(total):
+                new_perm = list(random.sample(list(self.profile.alternatives), m))
+                while new_perm in permutations:
+                    new_perm = list(random.sample(list(self.profile.alternatives), m))
+                permutations.append(new_perm)
+        else:
+            permutations = list(itertools.permutations(self.profile.alternatives))
+            total = math.factorial(len(self.profile.alternatives))
+
+        print(f"Testing {total} agendas...")
 
         outcomes_temp = []
 
-        with concurrent.futures.ProcessPoolExecutor(max_workers=4) as executor:
+        with concurrent.futures.ProcessPoolExecutor(max_workers=6) as executor:
             for permutation in permutations:
                 outcomes_temp.append(
                     executor.submit(calculate_outcome, self.type, permutation, self.quota, self.profile)
@@ -37,7 +53,7 @@ class Analysis:
 
         for outcome in outcomes_temp:
             result = outcome.result()
-            outcomes[result] = outcomes.get(result) + 1
+            outcomes[result] = outcomes.get(result, 0) + 1
 
         nonzero_outcomes = list(filter(lambda x: x[1] > 0, outcomes.items()))
 

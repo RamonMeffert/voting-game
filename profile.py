@@ -161,8 +161,6 @@ class Profile:
         and assigned to equal groups.
         """
 
-        ## TODO: Add voter groups groups
-
         if num_groups == None:
             num_groups = num_voters
 

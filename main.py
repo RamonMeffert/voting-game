@@ -11,28 +11,29 @@ from rule import Rule
 from enum import Enum
 from pathlib import Path
 
-####
-# To do:
-# - check (for 1 large profile) influence of quota value on manipulability for both amendment and successive
-# - run both procedures for Borda/Plurality and Amendment/Successive w/ 9 alternatives
-##
-
 
 def main(args):
 
-    profiles = read_profiles(args.input_directory, args.n_alternatives)
-
-    if len(profiles) > 0:
-        print(f"Found {len(profiles)} profiles with {args.n_alternatives} alternatives")
+    if args.random_profile:
+        # Generate 5 random profiles of the give size. Filename is replaced with text 'generated'
+        profiles = {f"generated-{i}":Profile.random(num_voters=50, num_alternatives=args.n_alternatives) for i in range(25)}
     else:
-        print(f"No profiles with {args.n_alternatives} alternatives found. Exiting.")
-        exit()
+        profiles = read_profiles(args.input_directory, args.n_alternatives)
+
+    if args.random_profile:
+        print(f"Generated {len(profiles)} random profiles with {args.n_alternatives} alternatives")
+    else:
+        if len(profiles) > 0:
+            print(f"Found {len(profiles)} profiles with {args.n_alternatives} alternatives")
+        else:
+            print(f"No profiles with {args.n_alternatives} alternatives found. Exiting.")
+            exit()
 
     results = {}
 
     for filename, profile in profiles.items():
         winner = profile.winner(args.rule)
-        n = len(profile.alternatives)
+        n = len(profile.ballots)
         quota = n / 2
 
         analysis = Analysis(args.procedure, profile, quota, winner)
@@ -50,9 +51,14 @@ def main(args):
 
     os.makedirs(args.output_directory, exist_ok=True)
 
+    if args.random_profile:
+        is_random = "-random"
+    else:
+        is_random = ""
+
     output_filename = os.path.join(
         args.output_directory,
-        f"{str(args.rule)}-{str(args.procedure)}-{args.n_alternatives}.log",
+        f"{str(args.rule)}-{str(args.procedure)}-{args.n_alternatives}{is_random}.log",
     )
 
     with open(output_filename, "w") as output_file:
@@ -118,6 +124,13 @@ if __name__ == "__main__":
         type=str,
         default="./logs/",
         help="The directory to save output files to. Will be created if it doesn't exist already",
+    )
+    parser.add_argument(
+        "-x",
+        "--random_profile",
+        default=False,
+        action=argparse.BooleanOptionalAction,
+        help="Whether to generate a random profile for the analysis. If false, the code will try to find a profile from the input directory",
     )
 
     args = parser.parse_args()

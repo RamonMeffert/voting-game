@@ -3,6 +3,7 @@ import random
 import os
 import math
 import argparse
+import sys
 from profile import Profile
 from game import Game
 from gametype import GameType
@@ -18,33 +19,57 @@ def main(args):
         print("This won't work")
         exit()
 
-    profile = find_profile(args.input_directory, args.n_alternatives)
+    if args.random_profile:
+        profile = Profile.random(num_voters=50, num_alternatives=args.n_alternatives)
+    else:
+        profile = find_profile(args.input_directory, args.n_alternatives)
 
     if profile != None:
-        filename, prof = profile
-        print(f"Found a file with {args.n_alternatives} alternatives: {filename}")
+        if args.random_profile:
+            print(f"Generated a random profile with {args.n_alternatives} alternatives")
+            prof = profile
+        else:
+            filename, prof = profile
+            print(f"Found a file with {args.n_alternatives} alternatives: {filename}")
 
         results = {}
         expected = prof.winner(args.rule)
         n_voters = len(prof.ballots)
         
         for q in [i + 1 for i in range(n_voters)]:
-            analysis = Analysis(GameType.SUCCESSIVE, prof, q, expected)
+            analysis = Analysis(args.procedure, prof, q, expected)
 
             percentage, _ = analysis.outcomes()
             results[q] = percentage
 
         os.makedirs(args.output_directory, exist_ok=True)
 
+        if args.random_profile:
+            is_random = "-random"
+        else:
+            is_random = ""
+
         output_filename = os.path.join(
             args.output_directory,
-            f"q-{str(args.rule)}-{args.n_alternatives}.log",
+            f"q-{str(args.rule)}-{str(args.procedure)}-{args.n_alternatives}{is_random}.log",
         )
 
+        original_stdout = sys.stdout
+
         with open(output_filename, "w") as output_file:
+            if args.random_profile:
+                # print profile to file
+                sys.stdout = output_file
+                profile.print()
+                sys.stdout = original_stdout
+            
             writer = csv.writer(output_file)
-            writer.writerow(["file", filename])
+            
+            if not args.random_profile:
+                writer.writerow(["file", filename])
+           
             writer.writerow([])
+            
             for quota, percentage in results.items():
                 writer.writerow([quota, percentage])
 
@@ -76,6 +101,14 @@ if __name__ == "__main__":
         help="Which rule to compare to. Note that only plurality and borda are implemented currently.",
     )
     parser.add_argument(
+        "-p",
+        "--procedure",
+        type=GameType.argparse,
+        default="successive",
+        choices=list(GameType),
+        help="Which procedure to use",
+    )
+    parser.add_argument(
         "-i",
         "--input_directory",
         type=str,
@@ -94,6 +127,13 @@ if __name__ == "__main__":
         type=str,
         default="./logs/",
         help="The directory to save output files to. Will be created if it doesn't exist already",
+    )
+    parser.add_argument(
+        "-x",
+        "--random_profile",
+        default=False,
+        action=argparse.BooleanOptionalAction,
+        help="Whether to generate a random profile for the analysis. If false, the code will try to find a profile from the input directory",
     )
 
     args = parser.parse_args()
