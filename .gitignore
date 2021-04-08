@@ -56,7 +56,7 @@ cover/
 *.pot
 
 # Django stuff:
-*.log
+# *.log
 local_settings.py
 db.sqlite3
 db.sqlite3-journal
@@ -142,3 +142,6 @@ cython_debug/
 
 # log files
 logs/
+
+# macOS garbage
+.DS_Store

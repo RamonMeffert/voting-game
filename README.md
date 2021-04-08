@@ -3,6 +3,23 @@
 Some exploratory code for a final project for the AI master course "Computational Social Choice" at the University of Groningen.
 The code currently implements the amendment and successive procedures from [Barberà and Salvador (2017)][1].
 
+## Results
+
+### Quota sweeps
+
+The `results` folder contains the results of some of the experiments we have done on the influence of quota values.
+The `quota_sweeps` folder contains the outcomes of several experiments in which we generated random profiles and analysed the influence on the quota value on their outcome.
+Files are named according to the rule `q-<RULE>-<PROCEDURE>-<AGENDA_SIZE>.log`.
+Furthermore, four `.csv` files are available containing all results for the configuration indicated in the file name.
+
+### Random profile analysis
+
+The `random_analysis` folder contains the outcomes of analysing the same four configurations mentioned above.
+In this case, 50 random profiles were generated and analysed, meaning that the outcomes of `min(n², 7!)` agendas were
+calculated to figure out how often the outcome from the non-sequential rule (Borda/Plurality) was the same as the outcome
+of one of the sequential procedures (Successive/Amendment). These files have on their first line the average percentage,
+followed by the percentages of every individual run.
+
 ## Usage
 
 ### Creating voting profiles
